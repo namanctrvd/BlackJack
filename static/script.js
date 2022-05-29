@@ -10,6 +10,8 @@ const YOU = blackjackGame['you']
 const DEALER = blackjackGame['dealer']
 
 const hitSound = new Audio('static/sounds/swish.m4a')
+const winSound = new Audio('static/sounds/cash.mp3')
+const lostSound = new Audio('static/sounds/aww.mp3')
 
 function blackjackHit() {
     let card = randomCard()
@@ -33,6 +35,7 @@ function showCard(card, activePlayer) {
 }
 
 function blackjackDeal() {
+    showResult(computeWinner()) 
     let yourImages = document.querySelector('#your-box').querySelectorAll('img')
     let dealerImages = document.querySelector('#dealer-box').querySelectorAll('img')
 
@@ -51,6 +54,8 @@ function blackjackDeal() {
 
     document.querySelector('#your-blackjack-result').style.color = '#ffffff'
     document.querySelector('#dealer-blackjack-result').style.color = '#ffffff'
+
+    
 }
 
 function updateScore(card, activePlayer) {
@@ -83,4 +88,56 @@ function blackjackStand() {
     showCard(card, DEALER)
     updateScore(card, DEALER)
     showScore(DEALER)
+}
+
+function computeWinner() {
+    let winner 
+    
+    if (YOU['score'] <= 21) {
+        // condition: Higher score than dealer or the dealer busts
+        if (YOU['score'] > DEALER['score'] || DEALER['score'] > 21 ) {
+            console.log('You won!')
+            winner = YOU
+        }
+        else if (YOU['score'] < DEALER['score']) {
+            console.log('You lost!')
+            winner = DEALER
+        }
+        else if (YOU['score'] ===  DEALER['score']) {
+            console.log('You drew!')
+        }
+    }
+    // condition: when user busts and dealer dosen't
+    else if (YOU['score'] > 21 && DEALER['score'] <= 21) {
+        console.log('You lost!');
+        winner = DEALER;
+    }
+    // condition: when user and dealer both busts
+    else if (YOU['score'] > 21 && DEALER['score'] > 21) {
+        console.log('You drew!')
+    }
+
+    return winner
+
+}
+
+function showResult(winner) {
+    let message, messageColor
+    if (winner === YOU){
+        message = 'You Won!'
+        messagecolor = 'green'
+        winSound.play()
+    }
+    else if (winner === DEALER) {
+        message = 'You Lost!'
+        messagecolor = 'red'
+        lostSound.play()
+    }
+    else {
+        message = 'You Drew!'
+        messageColor = 'black'
+    }
+
+    document.querySelector('#result').innerHTML = message;
+    document.querySelector('#result').style.color = messageColor;
 }

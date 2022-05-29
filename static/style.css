@@ -46,9 +46,7 @@ button {
 
 .flex-blackjack-row-1,
 .flex-blackjack-row-2,
-.flex-blackjack-row-3,
-.flex-blackjack-row-4,
-.flex-blackjack-row-5 {
+.flex-blackjack-row-3{
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -56,10 +54,13 @@ button {
     border: 1px solid black;
 }
 
-.flex-blackjack-row-4,
-.flex-blackjack-row-5 {
+.flex-blackjack-row-4 {
+    display: grid;
+    grid-template-columns:  1fr 1fr 1fr;
+    border: 1px solid black;
     padding: 5px;
 }
+
 
 .flex-blackjack-row-3 {
     background:url('images/ui/table.jpg');
@@ -99,7 +100,17 @@ button {
     border: 1px solid black;
     display: flex;
     border-radius: 4px;
-    margin: 10px;
+    margin:auto;
+    margin-bottom: ;
+}
+
+#result-div {
+    border: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 900;
+    margin-left: ;
+
+    
 }
 
 table, th, td {
