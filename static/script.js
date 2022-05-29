@@ -3,7 +3,11 @@ let blackjackGame = {
     'you': { 'scoreSpan': '#your-blackjack-result', 'div': '#your-box', 'score': 0 },
     'dealer': { 'scoreSpan': '#dealer-blackjack-result', 'div': '#dealer-box', 'score': 0 },
     'cards': ['cardClubs2', 'cardClubs3', 'cardClubs4', 'cardClubs5', 'cardClubs6', 'cardClubs7', 'cardClubs8', 'cardClubs9', 'cardClubs10', 'cardClubsA', 'cardClubsJ', 'cardClubsQ', 'cardClubsK', 'cardDiamonds2', 'cardDiamonds3', 'cardDiamonds4', 'cardDiamonds5', 'cardDiamonds6', 'cardDiamonds7', 'cardDiamonds8', 'cardDiamonds9', 'cardDiamonds10', 'cardDiamondsA', 'cardDiamondsJ', 'cardDiamondsQ', 'cardDiamondsK', 'cardHearts2', 'cardHearts3', 'cardHearts4', 'cardHearts5', 'cardHearts6', 'cardHearts7', 'cardHearts8', 'cardHearts9', 'cardHearts10', 'cardHeartsA', 'cardHeartsJ', 'cardHeartsQ', 'cardHeartsK', 'cardSpades2', 'cardSpades3', 'cardSpades4', 'cardSpades5', 'cardSpades6', 'cardSpades7', 'cardSpades8', 'cardSpades9', 'cardSpades10', 'cardSpadesA', 'cardSpadesJ', 'cardSpadesQ', 'cardSpadesK'],
-    'cardMap': { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '0': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': [1, 11] }
+    'cardMap': { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '0': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': [1, 11] },
+    'wins': 0,
+    'losses': 0,
+    'draws': 0
+
 }
 
 const YOU = blackjackGame['you']
@@ -35,7 +39,6 @@ function showCard(card, activePlayer) {
 }
 
 function blackjackDeal() {
-    showResult(computeWinner()) 
     let yourImages = document.querySelector('#your-box').querySelectorAll('img')
     let dealerImages = document.querySelector('#dealer-box').querySelectorAll('img')
 
@@ -54,6 +57,8 @@ function blackjackDeal() {
 
     document.querySelector('#your-blackjack-result').style.color = '#ffffff'
     document.querySelector('#dealer-blackjack-result').style.color = '#ffffff'
+
+    document.querySelector('#result').innerHTML = '';
 
     
 }
@@ -88,6 +93,11 @@ function blackjackStand() {
     showCard(card, DEALER)
     updateScore(card, DEALER)
     showScore(DEALER)
+
+    if (DEALER['score'] > 15) {
+        let winner = computeWinner();
+        showResult(winner)
+    }
 }
 
 function computeWinner() {
@@ -96,25 +106,25 @@ function computeWinner() {
     if (YOU['score'] <= 21) {
         // condition: Higher score than dealer or the dealer busts
         if (YOU['score'] > DEALER['score'] || DEALER['score'] > 21 ) {
-            console.log('You won!')
+            blackjackGame['wins']++
             winner = YOU
         }
         else if (YOU['score'] < DEALER['score']) {
-            console.log('You lost!')
+            blackjackGame['losses']++
             winner = DEALER
         }
         else if (YOU['score'] ===  DEALER['score']) {
-            console.log('You drew!')
+            blackjackGame['draws']++
         }
     }
     // condition: when user busts and dealer dosen't
     else if (YOU['score'] > 21 && DEALER['score'] <= 21) {
-        console.log('You lost!');
+        blackjackGame['losses']++;
         winner = DEALER;
     }
     // condition: when user and dealer both busts
     else if (YOU['score'] > 21 && DEALER['score'] > 21) {
-        console.log('You drew!')
+        blackjackGame['draws']++
     }
 
     return winner
@@ -123,17 +133,21 @@ function computeWinner() {
 
 function showResult(winner) {
     let message, messageColor
+
     if (winner === YOU){
+        document.querySelector('#wins').innerHTML = blackjackGame['wins']
         message = 'You Won!'
-        messagecolor = 'green'
+        messageColor = 'green'
         winSound.play()
     }
     else if (winner === DEALER) {
+        document.querySelector('#losses').innerHTML = blackjackGame['losses']
         message = 'You Lost!'
-        messagecolor = 'red'
+        messageColor = 'red'
         lostSound.play()
     }
     else {
+        document.querySelector('#draws').innerHTML = blackjackGame['draws']
         message = 'You Drew!'
         messageColor = 'black'
     }
