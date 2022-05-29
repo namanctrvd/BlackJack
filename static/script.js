@@ -24,10 +24,12 @@ function randomCard() {
 }
 
 function showCard(card, activePlayer) {
-    let cardImage = document.createElement('img')
-    cardImage.src = `static/images/cards/${card}.png`
-    document.querySelector(activePlayer['div']).appendChild(cardImage)
-    hitSound.play()
+    if (activePlayer['score'] <= 21) {
+        let cardImage = document.createElement('img')
+        cardImage.src = `static/images/cards/${card}.png`
+        document.querySelector(activePlayer['div']).appendChild(cardImage)
+        hitSound.play()
+    }
 }
 
 function blackjackDeal() {
@@ -39,15 +41,46 @@ function blackjackDeal() {
     }
     for (let i = 0; i < dealerImages.length; i++) {
         dealerImages[i].remove();
-    }
+    } 
+
+    YOU['score'] = 0;
+    DEALER['score'] = 0;
+
+    document.querySelector('#your-blackjack-result').innerHTML = 0;
+    document.querySelector('#dealer-blackjack-result').innerHTML = 0
+
+    document.querySelector('#your-blackjack-result').style.color = '#ffffff'
+    document.querySelector('#dealer-blackjack-result').style.color = '#ffffff'
 }
 
 function updateScore(card, activePlayer) {
-    activePlayer['score'] += blackjackGame['cardMap'][card.slice(-1)]
+    if (card.slice(-1) === 'A') {
+        // if adding 1 keeps score below 21 than add 11 otherwise ad 1
+        if (activePlayer['score'] + blackjackGame['cardMap'][card.slice(-1)][1] <= 21) {
+            activePlayer['score'] += blackjackGame['cardMap'][card.slice(-1)][1]
+        }
+        else {
+            activePlayer['score'] += blackjackGame['cardMap'][card.slice(-1)][0]
+        }
+    }
+    else {
+        activePlayer['score'] += blackjackGame['cardMap'][card.slice(-1)]
+    }
 }
 
 function showScore(activePlayer) {
-    console.log(document.querySelector(activePlayer['scoreSpan']).innerHTML)
-    document.querySelector(activePlayer['scoreSpan']).innerHTML = activePlayer['score']
-    console.log(document.querySelector(activePlayer['scoreSpan']).innerHTML)
+    if (activePlayer['score'] > 21) {
+        document.querySelector(activePlayer['scoreSpan']).innerHTML = 'BUST!'
+        document.querySelector(activePlayer['scoreSpan']).style.color = 'red'
+    }
+    else {
+        document.querySelector(activePlayer['scoreSpan']).innerHTML = activePlayer['score']
+    }
+}
+
+function blackjackStand() {
+    let card = randomCard()
+    showCard(card, DEALER)
+    updateScore(card, DEALER)
+    showScore(DEALER)
 }
