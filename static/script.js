@@ -8,7 +8,8 @@ let blackjackGame = {
     'losses': 0,
     'draws': 0,
     'isStand': false,
-    'turnsOver': false
+    'turnsOver': false,
+    'hit': false
 
 }
 
@@ -20,13 +21,13 @@ const winSound = new Audio('static/sounds/cash.mp3')
 const lostSound = new Audio('static/sounds/aww.mp3')
 
 function blackjackHit() {
-    if (blackjackGame['isStand'] === false ) {
+    if (blackjackGame['isStand'] === false) {
+        blackjackGame['hit'] = true
         let card = randomCard()
         showCard(card, YOU)
         updateScore(card, YOU)
         showScore(YOU)
     }
-    
 }
 
 function randomCard() {
@@ -43,9 +44,14 @@ function showCard(card, activePlayer) {
     }
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 function blackjackDeal() {
     if (blackjackGame['turnsOver'] === true) {
         blackjackGame['isStand'] = false
+        blackjackGame['hit'] === false
         let yourImages = document.querySelector('#your-box').querySelectorAll('img')
         let dealerImages = document.querySelector('#dealer-box').querySelectorAll('img')
 
@@ -69,7 +75,6 @@ function blackjackDeal() {
 
         blackjackGame['turnsOver'] = false
     }
-    
 }
 
 function updateScore(card, activePlayer) {
@@ -97,26 +102,34 @@ function showScore(activePlayer) {
     }
 }
 
-function blackjackStand() {
-    blackjackGame['isStand'] = true
-    let card = randomCard()
-    showCard(card, DEALER)
-    updateScore(card, DEALER)
-    showScore(DEALER)
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
 
-    if (DEALER['score'] > 15) {
+async function blackjackStand() {
+    if (blackjackGame['hit'] === true) {
+        blackjackGame['isStand'] = true
+        while (DEALER['score'] < 16 && blackjackGame['isStand'] === true) {
+            let card = randomCard()
+            showCard(card, DEALER)
+            updateScore(card, DEALER)
+            showScore(DEALER)
+            await sleep(1000)
+        }
+
         blackjackGame['turnsOver'] = true
         let winner = computeWinner();
         showResult(winner)
     }
+
 }
 
 function computeWinner() {
-    let winner 
-    
+    let winner
+
     if (YOU['score'] <= 21) {
         // condition: Higher score than dealer or the dealer busts
-        if (YOU['score'] > DEALER['score'] || DEALER['score'] > 21 ) {
+        if (YOU['score'] > DEALER['score'] || DEALER['score'] > 21) {
             blackjackGame['wins']++
             winner = YOU
         }
@@ -124,7 +137,7 @@ function computeWinner() {
             blackjackGame['losses']++
             winner = DEALER
         }
-        else if (YOU['score'] ===  DEALER['score']) {
+        else if (YOU['score'] === DEALER['score']) {
             blackjackGame['draws']++
         }
     }
@@ -139,7 +152,6 @@ function computeWinner() {
     }
 
     return winner
-
 }
 
 function showResult(winner) {
@@ -167,5 +179,5 @@ function showResult(winner) {
         document.querySelector('#result').style.color = messageColor;
     }
 
-    
+
 }
