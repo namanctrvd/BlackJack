@@ -2,8 +2,8 @@
 
 A simple blackjack game simulation using Javascript.
 
-### Screenshot
-![Screenshot 2022-05-30 at 3 59 21 AM](https://user-images.githubusercontent.com/59576063/170894257-03f24c0a-a1f2-41e1-a882-2822646f86ec.png)
+### Demo Video
+https://user-images.githubusercontent.com/59576063/170896983-49be95e9-fc31-42ad-9634-3f8521d79c0c.mp4
 
 
 ## Workflow
