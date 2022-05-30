@@ -2,7 +2,9 @@
 
 A simple blackjack game simulation using Javascript.
 
+<<<<<<< HEAD
 ### Screenshot
+>>>>>>> 9590a29187c0837c1f9be2d098206ebb070703c5
 
 ## Workflow
 
